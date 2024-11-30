@@ -31,9 +31,7 @@ spec:
         - --collector.netclass.ignored-devices=^(veth.*)$
         - --collector.cpu
         - --collector.diskstats
-        - --collector.memory
         - --collector.loadavg
-        - --collector.systemd
         - --collector.thermal_zone
         name: node-exporter
         image: prom/node-exporter:v1.8.2
