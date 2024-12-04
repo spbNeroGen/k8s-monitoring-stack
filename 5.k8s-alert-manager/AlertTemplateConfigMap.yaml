@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-templates
+  namespace: monitoring
+data:
+  alertmanager.tmpl: |-
+    {{ define "telegram.alert" }}
+    🚨 *ALERT TRIGGERED* 🚨
+
+    🛑 *Alert Name:*   {{ .CommonLabels.alertname }} 
+    🗂️ *Namespace:*   {{ .CommonLabels.namespace }} 
+    📦 *Pod:*   {{ .CommonLabels.pod }} 
+    ⚠️ *Status:*   {{ .CommonLabels.phase }}
+
+    {{ if .CommonAnnotations.description }}
+    📝 *Description:*   {{ .CommonAnnotations.description }}
+    {{ else if eq .CommonLabels.alertname "PodCrashLoopBackOff" }}
+    📝 *Description:*   Под {{ .CommonLabels.pod }} в пространстве имен {{ .CommonLabels.namespace }} имеет {{ .Value }} рестартов за последние 5 минут.
+    {{ else if eq .CommonLabels.alertname "PodNotRunning" }}
+    📝 *Description:*   Под {{ .CommonLabels.pod }} в пространстве имен {{ .CommonLabels.namespace }} находится в состоянии {{ .CommonLabels.phase }} более 5 минут.
+    {{ else }}
+    📝 *Description:*   Нет описания
+    {{ end }}
+
+    🔴 *Severity:*   {{ .CommonLabels.severity }} 
+    {{ end }}

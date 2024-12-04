@@ -1,0 +1,44 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: alertmanager-config
+  namespace: monitoring
+data:
+  config.yml: |-
+    global:
+    # Здесь дополнительные настройки 
+    templates:
+      - '/etc/alertmanager-templates/alertmanager.tmpl'
+    route:
+      receiver: telegram_receiver
+      group_by: ['alertname', 'priority']
+      group_wait: 10s
+      group_interval: 5m
+      repeat_interval: 15m
+      routes:
+        - receiver: telegram_receiver
+          match:
+            severity: critical
+          group_wait: 10s
+          group_interval: 1m
+          repeat_interval: 5m
+        - receiver: telegram_receiver
+          match:
+            severity: warning
+          group_wait: 30s
+          group_interval: 5m
+          repeat_interval: 30m
+        - receiver: telegram_receiver
+          match:
+            severity: info
+          group_wait: 1m
+          group_interval: 10m
+          repeat_interval: 2h
+    receivers:
+    - name: telegram_receiver
+      telegram_configs:
+      - bot_token: "123"
+        api_url: https://api.telegram.org
+        chat_id: 123
+        parse_mode: 'Markdown'
+        message: '{{ template "telegram.alert" . }}'

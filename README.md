@@ -13,6 +13,7 @@
 ![scheme](./pics/stack.png)
 
 ---
+
 ## Схема взаимодействия
 
 1. **Node Exporter** и **Kube-state-metrics**:
@@ -124,10 +125,58 @@ Grafana — инструмент для визуализации данных.
 
 ### Настройка k8s
 
-Создаем namespace - `monitoring`:
+Создаем **namespace** - `monitoring`:
 
-```bash
-kubectl create namespace monitoring`
-```
+   ```bash
+   kubectl create namespace monitoring`
+   ```
 
-to be continued...
+Деплоим `Node-exporter`:
+
+   ```bash
+   kubectl apply -f 1.k8s-node-exporter
+   ```
+
+Деплоим `Kube-state-metrics`:
+
+   ```bash
+   kubectl apply -f 2.kube-state-metrics
+   ```
+
+Деплоим `Prometheus`, для включение `Ingress` в файле `prometheus-ingress.yaml`:
+
+   ```bash
+   kubectl apply -f 3.k8s-prometheus
+   ```
+
+Деплоим `Grafana`:
+
+   ```bash
+   kubectl apply -f 4.k8s-grafana
+   ```
+
+Деплоим `Alert-manager`:
+
+   ```bash
+   kubectl apply -f 5.k8s-alert-manager
+   ```
+
+   В файле `AlertManagerConfigmap.yaml` указывается `id TelegramBot` и `ID Chat`, в который будут отправляться алерты, например:
+
+- ![scheme](./pics/alertmsg.png)
+
+---
+
+### Доступы
+
+Доступы огранизованы через `NodePort`:
+
+- Prometheus доступен по порту: **30000**
+
+- Alert-manager доступен по порту: **31000**
+
+- Grafana доступна по порту: **32000** (учетная запись - admin\admin)
+
+---
+
+### Примечание

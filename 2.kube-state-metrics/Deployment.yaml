@@ -20,6 +20,9 @@ spec:
         app.kubernetes.io/version: 2.13.0
     spec:
       automountServiceAccountToken: true
+      serviceAccountName: kube-state-metrics
+      nodeSelector:
+        kubernetes.io/os: linux
       containers:
         - image: registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.13.0
           livenessProbe:
@@ -50,6 +53,10 @@ spec:
             runAsUser: 65534
             seccompProfile:
               type: RuntimeDefault
-          nodeSelector:
-            kubernetes.io/os: linux
-          serviceAccountName: kube-state-metrics
+          resources:
+            requests:
+              cpu: "100m" 
+              memory: "128Mi"
+            limits:
+              cpu: "500m"         
+              memory: "256Mi"    
