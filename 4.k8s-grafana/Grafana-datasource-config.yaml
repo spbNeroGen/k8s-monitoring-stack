@@ -4,17 +4,26 @@ metadata:
   name: grafana-datasources
   namespace: monitoring
 data:
-  prometheus.yaml: |-
+  datasources.yaml: |-
     {
         "apiVersion": 1,
         "datasources": [
             {
-               "access":"proxy",
+                "access": "proxy",
                 "editable": true,
                 "name": "prometheus",
                 "orgId": 1,
                 "type": "prometheus",
                 "url": "http://prometheus-service.monitoring.svc:8080",
+                "version": 1
+            },
+            {
+                "access": "proxy",
+                "editable": true,
+                "name": "loki",
+                "orgId": 1,
+                "type": "loki",
+                "url": "http://loki.monitoring.svc:3100",
                 "version": 1
             }
         ]
